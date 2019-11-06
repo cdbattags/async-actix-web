@@ -1,0 +1,31 @@
+[package]
+name = "async-actix-web"
+version = "0.1.0"
+authors = ["Christian Battaglia <christian.d.battaglia@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.8"
+env_logger = "0.6.2"
+chrono = "0.4.8"
+actix = "0.8.3"
+bytes = "0.4.12"
+actix-utils = "0.4.5"
+futures-timer = "0.3"
+futures01 = { package = "futures", version = "0.1", optional = false }
+
+[dependencies.actix-web]
+version = "1.0.7"
+features = ["ssl"]
+
+# https://rust-lang-nursery.github.io/futures-rs/blog/2019/04/18/compatibility-layer.html
+# Rust’s futures ecosystem is currently split in two: 
+# On the one hand we have the vibrant ecosystem built around futures@0.1 with its many libraries working on stable Rust 
+# and on the other hand there’s std::future ecosystem with support for the ergonomic and powerful async/await language feature. 
+# To bridge the gap between these two worlds we have introduced a compatibility layer as part of the futures@0.3 extension to std::future. 
+[dependencies.futures-preview]
+version = "0.3.0-alpha.18"
+default-features = false
+features = ["compat", "async-await", "nightly"]
