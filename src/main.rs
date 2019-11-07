@@ -1,6 +1,16 @@
 use futures::compat::Stream01CompatExt;
-use futures::future::{FutureExt, TryFutureExt};
-use futures::stream::TryStreamExt;
+use futures::compat::Compat;
+use futures::future::{
+    FutureExt,
+    TryFutureExt
+};
+use futures::stream::{
+    repeat,
+    Repeat,
+    StreamExt,
+    TryStreamExt
+};
+
 use futures01::future::Future;
 use futures01::stream::Stream;
 use futures01::sync::mpsc; // for `try_next`
@@ -14,15 +24,15 @@ fn inbound(
     req: HttpRequest,
     stream: web::Payload,
 ) -> impl Future<Item = HttpResponse, Error = Error> {
-    let fut = async_inbound(req, stream);
+    let fut = async_stream(req, stream);
     fut.boxed_local().compat()
 }
 
-async fn async_inbound(
+async fn async_message(
     req: HttpRequest,
     stream: web::Payload
 ) -> Result<HttpResponse> {
-    println!("Incoming request!");
+    println!("Incoming message request!");
 
     let mut compat_stream = stream.compat();
 
@@ -31,6 +41,25 @@ async fn async_inbound(
     }
 
     Ok(HttpResponse::Ok().content_type("text/html").body("We have liftoff!"))
+}
+
+async fn async_stream(
+    req: HttpRequest,
+    stream: web::Payload
+) -> Result<HttpResponse> {
+    println!("Incoming stream request!");
+
+    let stream03: Repeat<Result<Bytes, ()>> = repeat(
+        Ok(Bytes::from_static(b"Hello, world!"))
+    );
+
+    let stream01 = Compat::new(stream03);
+
+    Ok(
+        HttpResponse::Ok()
+            .content_type("text/html")
+            .streaming(stream01)
+    )
 }
 
 fn main() {
@@ -43,7 +72,7 @@ fn main() {
             .wrap(middleware::DefaultHeaders::new().header(http::header::CACHE_CONTROL, "no-cache"))
             .wrap(middleware::Logger::default())
             .service(web::resource("/hello-world").to(|| "Hello world!"))
-            .service(web::resource("/").route(web::post().to_async(inbound)))
+            .service(web::resource("/").route(web::get().to_async(inbound)))
     })
     .bind(format!("0.0.0.0:{}", port))
     .expect(&format!("Unable to bind on port {}", port))

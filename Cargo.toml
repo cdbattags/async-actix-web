@@ -25,7 +25,7 @@ features = ["ssl"]
 # On the one hand we have the vibrant ecosystem built around futures@0.1 with its many libraries working on stable Rust 
 # and on the other hand there’s std::future ecosystem with support for the ergonomic and powerful async/await language feature. 
 # To bridge the gap between these two worlds we have introduced a compatibility layer as part of the futures@0.3 extension to std::future. 
-[dependencies.futures-preview]
-version = "0.3.0-alpha.18"
+[dependencies.futures]
+version = "0.3.1"
 default-features = false
-features = ["compat", "async-await", "nightly"]
+features = ["compat", "async-await"]
