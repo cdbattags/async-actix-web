@@ -1,7 +1,16 @@
 use futures::compat::Stream01CompatExt;
 use futures::compat::Compat;
-use futures::future::{FutureExt, TryFutureExt};
-use futures::stream::{self, StreamExt, TryStreamExt};
+use futures::future::{
+    FutureExt,
+    TryFutureExt
+};
+use futures::stream::{
+    repeat,
+    Repeat,
+    StreamExt,
+    TryStreamExt
+};
+
 use futures01::future::Future;
 use futures01::stream::Stream;
 use futures01::sync::mpsc; // for `try_next`
@@ -40,13 +49,16 @@ async fn async_stream(
 ) -> Result<HttpResponse> {
     println!("Incoming stream request!");
 
-    let future03 = stream::repeat(10);
-    let future01 = future03.boxed_local().compat();
+    let stream03: Repeat<Result<Bytes, ()>> = repeat(
+        Ok(Bytes::from_static(b"Hello, world!"))
+    );
+
+    let stream01 = Compat::new(stream01);
 
     Ok(
         HttpResponse::Ok()
             .content_type("text/html")
-            .streaming(future01)
+            .streaming(stream01)
     )
 }
 
