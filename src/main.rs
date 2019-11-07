@@ -53,7 +53,7 @@ async fn async_stream(
         Ok(Bytes::from_static(b"Hello, world!"))
     );
 
-    let stream01 = Compat::new(stream01);
+    let stream01 = Compat::new(stream03);
 
     Ok(
         HttpResponse::Ok()
