@@ -15,6 +15,7 @@ Where can I/O take us?
 5. convert 0.3 stream into Node.js compatible stream
 
    - [Promise API · Issue #73 · neon-bindings/neon](https://github.com/neon-bindings/neon/issues/73)
+   - [wasm-bindgen-futures 0.2.16 - Docs.rs](https://docs.rs/crate/wasm-bindgen-futures/0.2.16)
 
 6. build a Rust -> NodeJS webserver with NGINX potentially on top
 
